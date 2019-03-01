@@ -14,16 +14,52 @@
       <h1>Mission to Mars</h1>
       <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scape New Data</a></p>
     </div>
+  </div>
+
     <div class="container">
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-12">
             <h2>Latest Mars News:</h2>
+            <p><h4>{{ mars.News_Title }}</h4>
+            <p>{{ mars.News_Description }}</p>
         </div>
       </div>
-    <h3>{{ mars.news_title}}</h3>
-    <h3>{{ vacation.news_p}}</h3>
+      <div class="col-md-7">
+      <h2> Featured Mars Image </h2>
+        <img src="{{ mars.Feature_Image_URL }} " alt="Mars Featured Image" style="width:100%">
+        </div>
+      <div class="row">
+      <div class="col-md-4">
+        <div class="panel panel-default center">
+          <div class="panel-body">
+            <h4> Current Weather On Mars</h4>
+            <p>{{ mars.Mars_Weather }} </p>
+          </div>
+        </div>
+        <h4> Mars Facts</h4>
+        <p> {{mars.Mars_Facts|safe}}
+    </div>
   </div>
-  </div>
+</div>
+
+      <div class="container">
+              <div class="row">
+        <div class="panel panel-default center">
+          <div class="panel-body">
+      <h2><center> Mars Hemispheres </center> </h2>
+        <div class="col-md-12">
+                <hr>
+                  {% for item in mars.mars_url_links %}   
+                  <div class="col-md-6 border border-secondary">
+                        <img src="{{item.img_url }}" style="width:100%">
+                        <p>{{item.title}}</p>
+                      </div>
+        {% endfor %}
+                  </div>
+            </div>
+          </div>
+      </div>
+    </div>
 </body>
 
 </html>

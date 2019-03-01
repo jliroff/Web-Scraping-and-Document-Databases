@@ -23,7 +23,7 @@ def scrape():
 	featured_image = picture_link['data-fancybox-href']
 
 	featured_image_url = 'https://www.jpl.nasa.gov' + featured_image
-	mars_data['Feature Image URL'] = featured_image_url
+	mars_data['Feature_Image_URL'] = featured_image_url
 
 
 	#Mars Weather
@@ -34,16 +34,49 @@ def scrape():
 	soup2 = BeautifulSoup(html, "html.parser")
 
 	mars_weather = soup2.find_all('p', class_='TweetTextSize TweetTextSize--normal js-tweet-text tweet-text')[0].text.strip()
-	mars_data['Mars Weather'] = mars_weather
+	mars_data['Mars_Weather'] = mars_weather
 
 
-    #Mars Hemispheres
-	mars_data['Hemisphere image urls'] = [
-	{"title":"Cerberus Hemisphere","img_url":"https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/cerberus_enhanced.tif/full.jpg"},
-	{"title":"Schiaparelli Hemisphere","img_url":"https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/schiaparelli_enhanced.tif/full.jpg"},
-	{"title":"Syrtis Major Hemisphere","img_url":"https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/syrtis_major_enhanced.tif/full.jpg"},
-	{"title":"Valles Marineris Hemisphere","img_url":"https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/valles_marineris_enhanced.tif/full.jpg"}
-	]
+	#Mars Hemispheres
+	hem = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+	browser.visit(hem)
+
+
+	# HTML object
+	html = browser.html
+    
+	# Parse HTML with Beautiful Soup
+	soup4 = BeautifulSoup(html, 'html.parser')
+
+    
+	mars_dic = {}
+	mars_url_links = []
+
+	results = soup4.find_all('h3')
+
+	for result in results:
+		item = result.text
+    
+		browser.click_link_by_partial_text(item)
+    
+    	# HTML object
+		xhtml = browser.html
+    
+		# Parse HTML with Beautiful Soup
+		soup5 = BeautifulSoup(xhtml, 'html.parser')
+    
+		link = soup5.find_all('div', class_="downloads")[0].find_all('a')[0].get("href")
+    
+		mars_dic["title"] = item
+		mars_dic["img_url"] = link
+    
+		mars_url_links.append(mars_dic)
+    
+		mars_dic = {}
+    
+		browser.click_link_by_partial_text('Back')
+
+	mars_data['mars_url_links'] = mars_url_links
 
 	#Mars Facts
 	marsfacts_url = 'https://space-facts.com/mars/'
@@ -55,7 +88,7 @@ def scrape():
 
 	mars_facts_html=marsfacts_pd.to_html(justify='left')
 
-	mars_data['Mars Facts'] = mars_facts_html
+	mars_data['Mars_Facts'] = mars_facts_html
 
 	#NASA Mars News
 	mars_news = 'https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at+desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest'
@@ -66,7 +99,7 @@ def scrape():
 	news_title = soup3.find_all('div', class_='content_title')[0].find('a').text.strip()
 	news_p = soup3.find_all("div", class_='image_and_description_container')[0].text.strip()
 
-	mars_data['News Title'] = news_title
-	mars_data['News Description'] = news_p
+	mars_data['News_Title'] = news_title
+	mars_data['News_Description'] = news_p
 
 	return mars_data
